@@ -1,0 +1,25 @@
+name: Create Pull Request on Merge to B
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: test
+          fetch-depth: 0
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: "New Pull Request as of ${{ github.event.head_commit.timestamp }}"
+          commit-message: "Automatically created new pull request as of ${{ github.event.head_commit.timestamp }}"
+          body: "This pull request was automatically created by GitHub Actions when branch A was merged."
+          branch: main
+          base: test
+          token: ${{ secrets.GITHUB_TOKEN }}
