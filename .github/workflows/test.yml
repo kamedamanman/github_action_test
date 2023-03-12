@@ -1,4 +1,4 @@
-name: Create Pull Request to develop
+name: Create Pull Request to staging
 
 on:
   push:
