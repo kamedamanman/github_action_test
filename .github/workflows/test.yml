@@ -35,6 +35,5 @@ jobs:
         if: ${{ steps.check_pr.outputs.count == '' }}
         run: gh pr create --fill -B staging
         env:
-          # github-actions[bot]のトークンを使って作成するために設定
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
