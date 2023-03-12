@@ -1,4 +1,4 @@
-name: Create Pull Request on Merge to B
+name: Create Pull Request on Merge to develop
 
 on:
   push:
@@ -21,16 +21,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: test
           fetch-depth: 0
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          title: "New Pull Request as of ${{ github.event.head_commit.timestamp }}"
-          commit-message: "Automatically created new pull request as of ${{ github.event.head_commit.timestamp }}"
-          body: "This pull request was automatically created by GitHub Actions when branch A was merged."
-          branch: main
-          base: test
-          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: check PR
+        id: check_pr
+        run: |
+          echo "count=$(gh pr list -B test -H ${{ github.ref_name }} --json 'id' -q '.[] | length')" >> $GITHUB_OUTPUT
+
+      - name: Create PR
+        if: ${{ steps.check_pr.outputs.count == '' }}
+        run: gh pr create --fill -B test
+        env:
+          # github-actions[bot]のトークンを使って作成するために設定
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
