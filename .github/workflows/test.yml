@@ -1,9 +1,9 @@
-name: Create Pull Request on Merge to develop
+name: Create Pull Request to develop
 
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   create_pull_request:
@@ -23,18 +23,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: test
+          ref: develop
           fetch-depth: 0
 
       - name: check PR
         id: check_pr
         run: |
-          echo "count=$(gh pr list -B test -H ${{ github.ref_name }} --json 'id' -q '.[] | length')" >> $GITHUB_OUTPUT
+          echo "count=$(gh pr list -B staging -H ${{ github.ref_name }} --json 'id' -q '.[] | length')" >> $GITHUB_OUTPUT
 
       - name: Create PR
         if: ${{ steps.check_pr.outputs.count == '' }}
-        run: gh pr create --fill -B test
+        run: gh pr create --fill -B staging
         env:
-          # github-actions[bot]のトークンを使って作成するために設定
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
