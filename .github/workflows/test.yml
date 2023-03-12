@@ -3,7 +3,7 @@ name: Create Pull Request on Merge to develop
 on:
   push:
     branches:
-      - main
+      - test
 
 jobs:
   create_pull_request:
@@ -29,11 +29,11 @@ jobs:
       - name: check PR
         id: check_pr
         run: |
-          echo "count=$(gh pr list -B test -H ${{ github.ref_name }} --json 'id' -q '.[] | length')" >> $GITHUB_OUTPUT
+          echo "count=$(gh pr list -B main -H ${{ github.ref_name }} --json 'id' -q '.[] | length')" >> $GITHUB_OUTPUT
 
       - name: Create PR
         if: ${{ steps.check_pr.outputs.count == '' }}
-        run: gh pr create --fill -B test
+        run: gh pr create --fill -B main
         env:
           # github-actions[bot]のトークンを使って作成するために設定
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
